@@ -2,6 +2,7 @@ import css from './app.module.css';
 import { searchImages } from '../services/pixabay';
 import { SearchBar } from './search_bar/search_bar';
 import { ImageGallery } from './images/image_gallery/image_gallery';
+import { Button } from './button/button';
 import { Component } from 'react';
 
 export class App extends Component {
@@ -9,7 +10,8 @@ export class App extends Component {
   state = {
     query: '',
     page: 1,
-    images: []
+    images: [],
+    canLoadMore: false
   };
 
   submitSearch = (e) => {
@@ -17,16 +19,18 @@ export class App extends Component {
     const query = e.target.elements.query.value.trim();
     this.setState({
       query: query,
-      page: 1
+      page: 1,
+      images: []
     });
   }
 
   async loadImages() {
     try {
-      const hits = await searchImages(this.state.query, this.state.page)
+      const { hits, canLoadMore } = await searchImages(this.state.query, this.state.page)
       console.log(hits)
       this.setState((prevState) => ({
-        images: [...prevState.images, ...hits]
+        images: [...prevState.images, ...hits],
+        canLoadMore: canLoadMore
       }))
     }
     catch (error) {
@@ -44,6 +48,7 @@ export class App extends Component {
     return <div className={css.app}>
       <SearchBar submitSearch={this.submitSearch} />
       <ImageGallery images={this.state.images} />
+      { this.state.canLoadMore && this.state.images && <Button onClick={() => this.setState((prevState) => ({ page: prevState.page + 1 }))} text="Load more" />}
     </div>
   };
 };

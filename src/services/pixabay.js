@@ -18,6 +18,10 @@ export const searchImages = async (query, page) => {
             per_page: 12,
             orientation: 'horizontal',
         },
-    });
-    return response.data.hits.map(({ id, webformatURL, tags, largeImageURL }) => ({ id, webformatURL, tags, largeImageURL }));
+    }); 
+    const return_data = {
+        hits: response.data.hits.map(({ id, webformatURL, tags, largeImageURL }) => ({ id, webformatURL, tags, largeImageURL })),
+        canLoadMore: response.data.totalHits > page * 12,
+    }
+    return return_data;
 }
