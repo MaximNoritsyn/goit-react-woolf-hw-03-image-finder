@@ -1,9 +1,12 @@
 import css from './app.module.css';
 import { searchImages } from '../services/pixabay';
+
 import { SearchBar } from './search_bar/search_bar';
 import { ImageGallery } from './images/image_gallery/image_gallery';
 import { Button } from './button/button';
 import { Loader } from './loader/loader';
+import { Modal } from './modal/modal';
+
 import { Component } from 'react';
 
 export class App extends Component {
@@ -13,7 +16,8 @@ export class App extends Component {
     page: 1,
     images: [],
     canLoadMore: false,
-    loading: false
+    loading: false,
+    modalImage: null,
   };
 
   submitSearch = (e) => {
@@ -24,6 +28,14 @@ export class App extends Component {
       page: 1,
       images: [],
     });
+  }
+
+  setModalImage = (image) => {
+    this.setState({ modalImage: image })
+  }
+
+  removeModalImage = () => {
+    this.setState({ modalImage: null })
   }
 
   async loadImages() {
@@ -53,8 +65,9 @@ export class App extends Component {
   render() {
     return <div className={css.app}>
       <SearchBar submitSearch={this.submitSearch} />
-      <ImageGallery images={this.state.images} />
+      <ImageGallery images={this.state.images} setModalImage={this.setModalImage} />
       <Loader visible={this.state.loading} />
+      { this.state.modalImage && <Modal {...this.state.modalImage} removeModalImage={this.removeModalImage} />}
       { this.state.canLoadMore && this.state.images && <Button onClick={() => this.setState((prevState) => ({ page: prevState.page + 1 }))} text="Load more" />}
     </div>
   };
