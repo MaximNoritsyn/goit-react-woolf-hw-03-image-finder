@@ -1,6 +1,7 @@
 import css from './app.module.css';
 import { searchImages } from '../services/pixabay';
 import { SearchBar } from './search_bar/search_bar';
+import { ImageGallery } from './images/image_gallery/image_gallery';
 import { Component } from 'react';
 
 export class App extends Component {
@@ -8,6 +9,7 @@ export class App extends Component {
   state = {
     query: '',
     page: 1,
+    images: []
   };
 
   submitSearch = (e) => {
@@ -19,9 +21,16 @@ export class App extends Component {
     });
   }
 
-  async loadImages(){
-    const hits = await searchImages(this.state.query, this.state.page)
-    console.log(hits)
+  async loadImages() {
+    try {
+      const hits = await searchImages(this.state.query, this.state.page)
+      this.setState({
+        images: hits.map(({ id, webformatURL, tags }) => ({ id, webformatURL, tags }))
+      })
+    }
+    catch (error) {
+      console.error(error)
+    }
   }
 
   componentDidUpdate(_, prevState){
@@ -33,6 +42,7 @@ export class App extends Component {
   render() {
     return <div className={css.app}>
       <SearchBar submitSearch={this.submitSearch} />
+      <ImageGallery images={this.state.images} />
     </div>
   };
 };
