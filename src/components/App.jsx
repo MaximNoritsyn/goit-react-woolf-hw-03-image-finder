@@ -42,14 +42,13 @@ export class App extends Component {
     this.setState({ loading: true })
     try {
       const { hits, canLoadMore } = await searchImages(this.state.query, this.state.page)
-      console.log(hits)
       this.setState((prevState) => ({
         images: [...prevState.images, ...hits],
         canLoadMore: canLoadMore
       }))
     }
     catch (error) {
-      console.error(error)
+      alert(error.message)
     }
     finally {
       this.setState({ loading: false })
