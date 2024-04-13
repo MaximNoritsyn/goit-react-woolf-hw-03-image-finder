@@ -24,9 +24,10 @@ export class App extends Component {
   async loadImages() {
     try {
       const hits = await searchImages(this.state.query, this.state.page)
-      this.setState({
-        images: hits
-      })
+      console.log(hits)
+      this.setState((prevState) => ({
+        images: [...prevState.images, ...hits]
+      }))
     }
     catch (error) {
       console.error(error)
