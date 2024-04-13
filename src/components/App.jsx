@@ -1,17 +1,33 @@
 import css from './app.module.css';
+import { searchImages } from '../services/pixabay';
 import { SearchBar } from './search_bar/search_bar';
 import { Component } from 'react';
 
 export class App extends Component {
 
   state = {
-    searchQuery: '',
+    query: '',
+    page: 1,
   };
 
   submitSearch = (e) => {
     e.preventDefault();
-    const searchQuery = e.target.elements.query.value.trim();
-    this.setState('searchQuery', searchQuery);
+    const query = e.target.elements.query.value.trim();
+    this.setState({
+      query: query,
+      page: 1
+    });
+  }
+
+  async loadImages(){
+    const hits = await searchImages(this.state.query, this.state.page)
+    console.log(hits)
+  }
+
+  componentDidUpdate(_, prevState){
+    if(this.state.page !== prevState.page || this.state.query!== prevState.query ){
+      this.loadImages()
+    }
   }
 
   render() {
