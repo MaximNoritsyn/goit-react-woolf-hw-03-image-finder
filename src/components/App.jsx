@@ -25,7 +25,7 @@ export class App extends Component {
     try {
       const hits = await searchImages(this.state.query, this.state.page)
       this.setState({
-        images: hits.map(({ id, webformatURL, tags }) => ({ id, webformatURL, tags }))
+        images: hits
       })
     }
     catch (error) {

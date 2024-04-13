@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PIXABAY_API_URL = 'http://pixabay.com/api';
+const PIXABAY_API_URL = 'https://pixabay.com/api/';
 const API_KEY = '40188796-142b3a6aed6b1a3d407973769';
 const AXIOS_CLIENT = axios.create({
     baseURL: PIXABAY_API_URL,
@@ -19,5 +19,5 @@ export const searchImages = async (query, page) => {
             orientation: 'horizontal',
         },
     });
-    return response.data.hits;
+    return response.data.hits.map(({ id, webformatURL, tags, largeImageURL }) => ({ id, webformatURL, tags, largeImageURL }));
 }
